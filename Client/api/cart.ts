@@ -40,10 +40,7 @@ export const incrementProductQuantity = async (
   if (cart.products) {
     const product = cart.products.find((product) => product.id === productId);
     if (product) {
-      console.log("Encontré");
-      console.log("Cant actual " + product.quantity);
       product.quantity += amount;
-      console.log("Nueva cantidad " + product.quantity);
 
       if (product.quantity === 0) await removeProduct(productId);
     }

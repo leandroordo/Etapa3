@@ -1,6 +1,6 @@
 export interface Cart {
   products: {
-    id: number;
+    id: string;
     name: string;
     quantity: number;
     price: number;
@@ -9,7 +9,8 @@ export interface Cart {
 }
 
 export interface Product {
-  id: number;
+  _id: string;
+  id: string;
   name: string;
   description: string;
   price: number;

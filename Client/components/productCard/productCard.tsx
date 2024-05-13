@@ -11,7 +11,7 @@ export default async function ProductCard({
   price,
   photo,
 }: {
-  id: number;
+  id: string;
   name: string;
   description: string;
   price: number;

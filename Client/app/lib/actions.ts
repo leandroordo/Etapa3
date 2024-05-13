@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { ContactMessage, Product } from "./model";
 import { connectToDB } from "./utils";
 import { z } from "zod";
+import { error } from "console";
 
 const addProductSchema = z.object({
   name: z
@@ -37,7 +38,6 @@ const addProductSchema = z.object({
       description: "Marca del producto",
       required_error: "La marca del producto es obligatorio",
     })
-    .min(3, { message: "La marca del producto es muy corta" })
     .max(100, { message: "La marca del producto es muy larga" }),
   description: z
     .string({
@@ -129,34 +129,60 @@ export async function addProduct(prevState: any, formData: FormData) {
     };
   }
 
+  const newProduct = new Product({
+    name,
+    price,
+    stock,
+    brand,
+    category,
+    description,
+    longDescription,
+    freeDelivery: freeDelivery === "on",
+    ageFrom,
+    ageTo,
+    photo,
+  });
+
   try {
-    connectToDB();
-    const newProduct = new Product({
-      name,
-      price,
-      stock,
-      brand,
-      category,
-      description,
-      longDescription,
-      freeDelivery: freeDelivery === "on",
-      ageFrom,
-      ageTo,
-      photo,
+    const uri = process.env.API_URL || "";
+    const endpoint = "products";
+
+    const res = await fetch(uri + endpoint, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        //Authorization: `Bearer ${API_TOKEN}`,
+      },
+      body: JSON.stringify(newProduct),
     });
 
-    await newProduct.save();
+    if (res.status === 200 || res.status === 201) {
+      revalidatePath("/");
+
+      return {
+        ok: true,
+        message: "Se ha guardado el producto",
+      };
+    } else if (res.status === 400) {
+      const errors = await res.json();
+      return {
+        ok: false,
+        type: "400",
+        ...errors,
+      };
+    } else {
+      return {
+        ok: false,
+        message: "Error al crear el producto",
+      };
+    }
   } catch (error) {
-    console.log(error);
-    throw new Error("Error al crear el producto");
+    return {
+      ok: false,
+      message: "Error al crear el producto",
+    };
   }
-
-  revalidatePath("/");
-  //   redirect("/");
-
-  return {
-    message: "Se ha guardado el producto",
-  };
 }
 
 export async function addContactMessage(prevState: any, formData: FormData) {

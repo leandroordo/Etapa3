@@ -17,18 +17,26 @@ const AddProductPage = () => {
   function handleSubmit(formData: FormData) {
     try {
       formAction(formData);
+      console.log(state);
 
-      toast("✅ Producto guardado correctamente", {
-        position: "bottom-left",
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-        transition: Bounce,
-      });
+      if (state && state.type !== "400") {
+        toast(
+          state.ok
+            ? "✅ Producto guardado correctamente"
+            : "❌ Ocurrió un error",
+          {
+            position: "bottom-left",
+            autoClose: 3000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+            transition: Bounce,
+          }
+        );
+      }
     } catch (error) {
       console.error(error);
     }
@@ -89,6 +97,7 @@ const AddProductPage = () => {
                     inputType="text"
                     label="Marca"
                     name="brand"
+                    maxLength={100}
                     required={false}
                   ></FormControl>
                   <small data-formerror>{state?.errors?.brand}</small>
@@ -174,7 +183,9 @@ const AddProductPage = () => {
                     inputType="text"
                     label="Fotografía"
                     name="photo"
+                    required={true}
                   ></FormControl>
+                  <small data-formerror>{state?.errors?.photo}</small>
                 </div>
                 <div className="form__row-grid">
                   <button type="submit" name="submit" className="button">
@@ -186,7 +197,6 @@ const AddProductPage = () => {
           </form>
         </div>
       </div>
-      <Toast />
     </>
   );
 };

@@ -112,7 +112,6 @@ function ContactPage() {
             </div>
           </div>
         </div>
-        <Toast />
       </div>
     </>
   );
