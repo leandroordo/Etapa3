@@ -21,9 +21,9 @@ export default function CartPopup({
   show,
 }: {
   clearCartAction: () => Promise<Cart>;
-  removeProductAction: (productId: number) => Promise<Cart>;
-  incrementProductQuantityAction: (productId: number) => Promise<Cart>;
-  decrementProductQuantityAction: (productId: number) => Promise<Cart>;
+  removeProductAction: (productId: string) => Promise<Cart>;
+  incrementProductQuantityAction: (productId: string) => Promise<Cart>;
+  decrementProductQuantityAction: (productId: string) => Promise<Cart>;
   closePopupAction: () => void;
   show: boolean;
 }) {
@@ -78,7 +78,7 @@ export default function CartPopup({
                         onClick={async () => {
                           dispatch(
                             setCart(
-                              await decrementProductQuantityAction(product.id)
+                              await decrementProductQuantityAction(product._id)
                             )
                           );
                         }}
@@ -93,7 +93,7 @@ export default function CartPopup({
                         onClick={async () => {
                           dispatch(
                             setCart(
-                              await incrementProductQuantityAction(product.id)
+                              await incrementProductQuantityAction(product._id)
                             )
                           );
                         }}
@@ -117,7 +117,7 @@ export default function CartPopup({
                   <button
                     className="button button-cartpopup"
                     onClick={async () => {
-                      dispatch(setCart(await removeProductAction(product.id)));
+                      dispatch(setCart(await removeProductAction(product._id)));
                     }}
                   >
                     <MdDeleteOutline />

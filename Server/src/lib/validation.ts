@@ -60,7 +60,7 @@ export const addProductSchema = z.object({
     .string({
       invalid_type_error: "La dirección URL de la foto no es válida",
       description: "URL de la foto del producto",
-      required_error: "La dirección URL de la foto es obligatoria2",
+      required_error: "La dirección URL de la foto es obligatoria",
     })
     .min(8, { message: "La dirección URL de la foto es muy corta" })
     .max(255, { message: "LLa dirección URL de la foto es muy larga" })
@@ -106,7 +106,6 @@ export const updateProductSchema = z.object({
         description: "Marca del producto",
         required_error: "La marca del producto es obligatorio",
       })
-      .min(3, { message: "La marca del producto es muy corta" })
       .max(100, { message: "La marca del producto es muy larga" })
   ),
   description: z.optional(
@@ -142,7 +141,7 @@ export const updateProductSchema = z.object({
       .string({
         invalid_type_error: "La dirección URL de la foto no es válida",
         description: "URL de la foto del producto",
-        required_error: "La dirección URL de la foto es obligatoria2",
+        required_error: "La dirección URL de la foto es obligatoria",
       })
       .min(8, { message: "La dirección URL de la foto es muy corta" })
       .max(255, { message: "LLa dirección URL de la foto es muy larga" })

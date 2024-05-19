@@ -1,36 +1,35 @@
 "use client";
+
 import FormControl from "@/components/formControl/formControl";
-import Toast from "@/components/toast/toast";
 import { useFormState } from "react-dom";
 import { Bounce, toast } from "react-toastify";
 import { addContactMessage } from "../lib/actions";
+import { AddContactMessageActionResult } from "@/api/types";
+import { useEffect } from "react";
 
-const initialState = {
-  message: "",
-};
+const initialState: AddContactMessageActionResult | undefined = undefined;
 
 function ContactPage() {
   const [state, formAction] = useFormState(addContactMessage, initialState);
 
-  function handleSubmit(formData: FormData) {
-    try {
-      formAction(formData);
-
-      toast("📩 Gracias por escribirnos", {
-        position: "bottom-left",
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-        transition: Bounce,
-      });
-    } catch (error) {
-      console.error(error);
+  useEffect(() => {
+    console.log(state);
+    if (state) {
+      if (state.type !== 400) {
+        toast(state.ok ? "✅ Gracias por escribirnos" : "❌ Ocurrió un error", {
+          position: "bottom-left",
+          autoClose: 3000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          transition: Bounce,
+        });
+      }
     }
-  }
+  }, [state]);
 
   return (
     <>
@@ -59,7 +58,7 @@ function ContactPage() {
               </p>
             </div>
             <div className="container__item-right">
-              <form action={handleSubmit}>
+              <form action={formAction}>
                 <div className="form__row-single">
                   <div>
                     <FormControl
@@ -81,7 +80,7 @@ function ContactPage() {
                       required={true}
                       maxLength={255}
                     ></FormControl>
-                    <small data-formerror>{state?.errors?.name}</small>
+                    <small data-formerror>{state?.errors?.email}</small>
                   </div>
                   <FormControl
                     inputType="text"
@@ -89,6 +88,7 @@ function ContactPage() {
                     placeHolder="Número de teléfono"
                     maxLength={100}
                   ></FormControl>
+                  <small data-formerror>{state?.errors?.telephone}</small>
                 </div>
                 <div className="form__row-single" data-formgroup>
                   <div>
@@ -100,7 +100,7 @@ function ContactPage() {
                       required={true}
                       maxLength={4000}
                     ></FormControl>
-                    <small data-formerror>{state?.errors?.name}</small>
+                    <small data-formerror>{state?.errors?.message}</small>
                   </div>
                 </div>
                 <div className="form__row-grid">

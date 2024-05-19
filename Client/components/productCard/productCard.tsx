@@ -21,7 +21,7 @@ export default async function ProductCard({
     "use server";
 
     return await addToCart({
-      id,
+      _id: id,
       name,
       description,
       price,

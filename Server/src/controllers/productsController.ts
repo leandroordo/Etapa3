@@ -3,11 +3,9 @@ import { connectToDB } from "../lib/utils";
 import { Product } from "../lib/model";
 import {
   addProductSchema,
-  addContactMessageSchema,
   mongoObjedIdSchema,
   updateProductSchema,
 } from "../lib/validation";
-import { ProductType } from "../types/products";
 import httpStatus from "http-status";
 
 export const getAllProducts = async (req: Request, res: Response) => {
@@ -64,7 +62,6 @@ export const getProduct = async (req: Request, res: Response) => {
 
 export const addProduct = async (req: Request, res: Response) => {
   if (!req.body.name) {
-    console.log("El contenido está vacío");
     res.status(httpStatus.BAD_REQUEST).send({
       message: "El contenido está vacío",
     });
@@ -99,7 +96,6 @@ export const addProduct = async (req: Request, res: Response) => {
     });
 
     if (!validatedFields.success) {
-      console.log(validatedFields.error.flatten().fieldErrors);
       res.status(httpStatus.BAD_REQUEST).send({
         errors: validatedFields.error.flatten().fieldErrors,
       });
@@ -125,7 +121,6 @@ export const addProduct = async (req: Request, res: Response) => {
 
     res.status(httpStatus.CREATED).send(newProduct);
   } catch (error) {
-    console.log(error);
     res.status(httpStatus.INTERNAL_SERVER_ERROR).send({
       message: "Error al crear el producto",
     });

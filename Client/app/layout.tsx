@@ -28,17 +28,17 @@ export default async function RootLayout({
     return await clearCart();
   };
 
-  const removeProductAction = async (productId: number) => {
+  const removeProductAction = async (productId: string) => {
     "use server";
     return await removeProduct(productId);
   };
 
-  const incrementProductQuantityAction = async (productId: number) => {
+  const incrementProductQuantityAction = async (productId: string) => {
     "use server";
     return await incrementProductQuantity(productId, 1);
   };
 
-  const decrementProductQuantityAction = async (productId: number) => {
+  const decrementProductQuantityAction = async (productId: string) => {
     "use server";
     return await incrementProductQuantity(productId, -1);
   };

@@ -1,25 +1,22 @@
 "use client";
 
-import { addProduct } from "@/app/lib/actions";
 import FormControl from "@/components/formControl/formControl";
-import Toast from "@/components/toast/toast";
+import { useEffect } from "react";
 import { useFormState } from "react-dom";
 import { Bounce, toast } from "react-toastify";
+import { addProduct } from "@/app/lib/actions";
 import "react-toastify/dist/ReactToastify.css";
+import { AddProductActionResult } from "@/api/types";
 
-const initialState = {
-  message: "",
-};
+const initialState: AddProductActionResult | undefined = undefined;
 
 const AddProductPage = () => {
   const [state, formAction] = useFormState(addProduct, initialState);
 
-  function handleSubmit(formData: FormData) {
-    try {
-      formAction(formData);
-      console.log(state);
-
-      if (state && state.type !== "400") {
+  useEffect(() => {
+    console.log(state);
+    if (state) {
+      if (state.type !== 400) {
         toast(
           state.ok
             ? "✅ Producto guardado correctamente"
@@ -37,10 +34,8 @@ const AddProductPage = () => {
           }
         );
       }
-    } catch (error) {
-      console.error(error);
     }
-  }
+  }, [state]);
 
   return (
     <>
@@ -53,7 +48,7 @@ const AddProductPage = () => {
 
       <div className="parallax__buffer">
         <div className="container__main">
-          <form action={handleSubmit}>
+          <form action={formAction}>
             <div className="container__row">
               <div className="container__item-left">
                 <h3>Datos del producto</h3>

@@ -18,9 +18,9 @@ export default function Header({
   decrementProductQuantityAction,
 }: {
   clearCartAction: () => Promise<Cart>;
-  removeProductAction: (productId: number) => Promise<Cart>;
-  incrementProductQuantityAction: (productId: number) => Promise<Cart>;
-  decrementProductQuantityAction: (productId: number) => Promise<Cart>;
+  removeProductAction: (productId: string) => Promise<Cart>;
+  incrementProductQuantityAction: (productId: string) => Promise<Cart>;
+  decrementProductQuantityAction: (productId: string) => Promise<Cart>;
 }) {
   const cart = useCart();
   const [showCart, setShowCart] = useState(false);

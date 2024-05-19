@@ -2,9 +2,11 @@
 
 import { revalidatePath } from "next/cache";
 import { ContactMessage, Product } from "./model";
-import { connectToDB } from "./utils";
 import { z } from "zod";
-import { error } from "console";
+import {
+  AddContactMessageActionResult,
+  AddProductActionResult,
+} from "@/api/types";
 
 const addProductSchema = z.object({
   name: z
@@ -61,6 +63,15 @@ const addProductSchema = z.object({
     })
     .gte(0, { message: "La edad hasta debe ser cero o mayor a cero" })
     .lte(99, { message: "La edad hasta es muy grande" }),
+  photo: z
+    .string({
+      invalid_type_error: "La dirección URL de la foto no es válida",
+      description: "URL de la foto del producto",
+      required_error: "La dirección URL de la foto es obligatoria2",
+    })
+    .min(8, { message: "La dirección URL de la foto es muy corta" })
+    .max(255, { message: "LLa dirección URL de la foto es muy larga" })
+    .url({ message: "La dirección URL de la foto no es válida" }),
 });
 
 const addContactMessageSchema = z.object({
@@ -97,7 +108,10 @@ const addContactMessageSchema = z.object({
     .max(4000, { message: "Escriba un mensaje o consulta un poco más corto" }),
 });
 
-export async function addProduct(prevState: any, formData: FormData) {
+export async function addProduct(
+  prevState: AddProductActionResult | undefined,
+  formData: FormData
+): Promise<AddProductActionResult> {
   const {
     name,
     price,
@@ -121,10 +135,13 @@ export async function addProduct(prevState: any, formData: FormData) {
     longDescription,
     ageFrom,
     ageTo,
+    photo,
   });
 
   if (!validatedFields.success) {
     return {
+      ok: false,
+      type: 400,
       errors: validatedFields.error.flatten().fieldErrors,
     };
   }
@@ -162,30 +179,38 @@ export async function addProduct(prevState: any, formData: FormData) {
 
       return {
         ok: true,
+        type: 200,
         message: "Se ha guardado el producto",
       };
     } else if (res.status === 400) {
       const errors = await res.json();
       return {
         ok: false,
-        type: "400",
+        type: 400,
         ...errors,
       };
     } else {
       return {
         ok: false,
+        type: 500,
         message: "Error al crear el producto",
       };
     }
   } catch (error) {
+    console.log(error);
     return {
       ok: false,
+      type: 500,
       message: "Error al crear el producto",
     };
   }
 }
 
-export async function addContactMessage(prevState: any, formData: FormData) {
+export async function addContactMessage(
+  prevState: AddContactMessageActionResult | undefined,
+  formData: FormData
+) {
+  console.log("ADD MESSAGE");
   const { name, email, telephone, message } = Object.fromEntries(formData);
   const validatedFields = addContactMessageSchema.safeParse({
     name,
@@ -196,27 +221,60 @@ export async function addContactMessage(prevState: any, formData: FormData) {
 
   if (!validatedFields.success) {
     return {
+      ok: false,
+      type: 400,
       errors: validatedFields.error.flatten().fieldErrors,
     };
   }
 
-  try {
-    connectToDB();
-    const newMessage = new ContactMessage({
-      name,
-      email,
-      telephone,
-      message,
-    });
+  const newMessage = new ContactMessage({
+    name,
+    email,
+    telephone,
+    message,
+  });
 
-    await newMessage.save();
+  try {
+    const uri = process.env.API_URL || "";
+    const endpoint = "messages";
+
+    const res = await fetch(uri + endpoint, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        //Authorization: `Bearer ${API_TOKEN}`,
+      },
+      body: JSON.stringify(newMessage),
+    });
+    if (res.status === 200 || res.status === 201) {
+      revalidatePath("/");
+
+      return {
+        ok: true,
+        type: 200,
+        message: "Se ha guardado el mensaje",
+      };
+    } else if (res.status === 400) {
+      const errors = await res.json();
+      return {
+        ok: false,
+        type: 400,
+        ...errors,
+      };
+    } else {
+      return {
+        ok: false,
+        type: 500,
+        message: "Error al guardar el mensaje",
+      };
+    }
   } catch (error) {
     console.log(error);
-    throw new Error("Error al guardar el mensaje");
+    return {
+      ok: false,
+      type: 500,
+      message: "Error al guardar el mensaje",
+    };
   }
-
-  //redirect("/");
-  return {
-    message: "Se ha guardado el mensaje",
-  };
 }
