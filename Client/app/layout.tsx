@@ -4,12 +4,13 @@ import Header from "../components/header/header";
 import Footer from "@/components/footer/footer";
 import StoreProvider from "./store/StoreProvider";
 import {
-  getCart,
+  getCartProducts,
   clearCart,
   removeProduct,
   incrementProductQuantity,
 } from "@/api/cart";
 import ToastProvider from "@/components/toast/toastProvider";
+import CartInitializer from "@/components/cartInitializer/cartInitializer";
 
 export const metadata: Metadata = {
   title: "Juguetería Cósmica",
@@ -21,7 +22,7 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const cart = await getCart();
+  const cart = await getCartProducts();
 
   const clearCartAction = async () => {
     "use server";
@@ -47,14 +48,16 @@ export default async function RootLayout({
     <html lang="en">
       <body>
         <StoreProvider cart={cart}>
-          <Header
-            clearCartAction={clearCartAction}
-            removeProductAction={removeProductAction}
-            incrementProductQuantityAction={incrementProductQuantityAction}
-            decrementProductQuantityAction={decrementProductQuantityAction}
-          ></Header>
-          <ToastProvider>{children}</ToastProvider>
-          <Footer></Footer>
+          <CartInitializer>
+            <Header
+              clearCartAction={clearCartAction}
+              removeProductAction={removeProductAction}
+              incrementProductQuantityAction={incrementProductQuantityAction}
+              decrementProductQuantityAction={decrementProductQuantityAction}
+            ></Header>
+            <ToastProvider>{children}</ToastProvider>
+            <Footer></Footer>
+          </CartInitializer>
         </StoreProvider>
       </body>
     </html>

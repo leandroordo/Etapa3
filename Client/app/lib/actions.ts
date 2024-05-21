@@ -210,7 +210,6 @@ export async function addContactMessage(
   prevState: AddContactMessageActionResult | undefined,
   formData: FormData
 ) {
-  console.log("ADD MESSAGE");
   const { name, email, telephone, message } = Object.fromEntries(formData);
   const validatedFields = addContactMessageSchema.safeParse({
     name,

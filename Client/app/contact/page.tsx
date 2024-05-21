@@ -13,7 +13,6 @@ function ContactPage() {
   const [state, formAction] = useFormState(addContactMessage, initialState);
 
   useEffect(() => {
-    console.log(state);
     if (state) {
       if (state.type !== 400) {
         toast(state.ok ? "✅ Gracias por escribirnos" : "❌ Ocurrió un error", {

@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import { configureStore } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { useSelector } from "react-redux";
-import { Cart } from "@/api/types";
+import { Cart, ProductInCart } from "@/api/types";
 
 export interface CartState {
   cart: Cart;
@@ -10,6 +10,7 @@ export interface CartState {
 
 const initialState: CartState = {
   cart: {
+    cartId: null,
     products: [],
   },
 };
@@ -18,8 +19,14 @@ export const cartSlice = createSlice({
   name: "cart",
   initialState,
   reducers: {
+    setCartId: (state, action: PayloadAction<string | null>) => {
+      state.cart.cartId = action.payload;
+    },
     setCart: (state, action: PayloadAction<Cart>) => {
       state.cart = action.payload;
+    },
+    setCartProducts: (state, action: PayloadAction<ProductInCart[]>) => {
+      state.cart.products = action.payload;
     },
   },
 });
@@ -31,7 +38,7 @@ export const createStore = () =>
     },
   });
 
-export const { setCart } = cartSlice.actions;
+export const { setCart, setCartId, setCartProducts } = cartSlice.actions;
 
 export type StoreType = ReturnType<typeof createStore>;
 export type RootState = ReturnType<StoreType["getState"]>;

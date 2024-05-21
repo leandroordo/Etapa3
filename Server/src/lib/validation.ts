@@ -186,3 +186,28 @@ export const addContactMessageSchema = z.object({
 export const mongoObjedIdSchema = z.object({
   id: z.string().regex(/^[0-9a-f]{24}$/, "El id no es un valor válido"),
 });
+
+export const addCartSchema = z.object({
+  productId: z
+    .string()
+    .min(24, { message: "El id del producto es muy corto" })
+    .max(24, { message: "El id del producto es muy largo" })
+    .regex(/^[0-9a-f]{24}$/, "El id no es un valor válido"),
+  quantity: z.coerce
+    .number({
+      invalid_type_error: "La cantidad no es válida",
+      description: "Cantidad del producto",
+    })
+    .gte(0, { message: "La cantidad debe ser cero o mayor a cero" })
+    .lte(50, { message: "La cantidad desde es muy grande" }),
+});
+
+export const updateProductInCartSchema = z.object({
+  quantity: z.coerce
+    .number({
+      invalid_type_error: "La cantidad no es válida",
+      description: "Cantidad del producto",
+    })
+    .gte(0, { message: "La cantidad debe ser cero o mayor a cero" })
+    .lte(50, { message: "La cantidad desde es muy grande" }),
+});

@@ -1,20 +1,27 @@
 export interface Cart {
-  products: {
-    _id: string;
-    name: string;
-    quantity: number;
-    price: number;
-    photo: string;
-  }[];
+  cartId?: string | null;
+  products: ProductInCart[];
+}
+
+export interface ProductInCart {
+  productId: string;
+  name: string;
+  quantity: number;
+  price: number;
+  photo: string;
 }
 
 export interface Product {
   _id: string;
-  // id: string;
   name: string;
   description: string;
   price: number;
   photo: string;
+}
+
+export interface ProductToAdd {
+  productId: string;
+  quantity: number;
 }
 
 export type AddProductActionResult = {

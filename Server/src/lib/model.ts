@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { Schema } from "mongoose";
 
 export const productsSchema = new mongoose.Schema(
   {
@@ -88,8 +88,29 @@ export const contactMessageSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+export const productInCartSchema = new Schema({
+  productId: {
+    type: Schema.Types.ObjectId,
+    required: true,
+  },
+  quantity: {
+    type: Number,
+    required: true,
+  },
+});
+
+// Define the Cart schema
+const cartSchema = new Schema(
+  {
+    products: [productInCartSchema],
+  },
+  { timestamps: true }
+);
+
 export const Product =
   mongoose.models.productos || mongoose.model("productos", productsSchema);
 
 export const ContactMessage =
   mongoose.models.mensajes || mongoose.model("mensajes", contactMessageSchema);
+
+export const Cart = mongoose.models.cart || mongoose.model("cart", cartSchema);

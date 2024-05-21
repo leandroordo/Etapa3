@@ -78,7 +78,9 @@ export default function CartPopup({
                         onClick={async () => {
                           dispatch(
                             setCart(
-                              await decrementProductQuantityAction(product._id)
+                              await decrementProductQuantityAction(
+                                product.productId
+                              )
                             )
                           );
                         }}
@@ -93,7 +95,9 @@ export default function CartPopup({
                         onClick={async () => {
                           dispatch(
                             setCart(
-                              await incrementProductQuantityAction(product._id)
+                              await incrementProductQuantityAction(
+                                product.productId
+                              )
                             )
                           );
                         }}
@@ -117,7 +121,9 @@ export default function CartPopup({
                   <button
                     className="button button-cartpopup"
                     onClick={async () => {
-                      dispatch(setCart(await removeProductAction(product._id)));
+                      dispatch(
+                        setCart(await removeProductAction(product.productId))
+                      );
                     }}
                   >
                     <MdDeleteOutline />
